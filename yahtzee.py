@@ -25,7 +25,7 @@ score = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 totals = [0, 0, 0, 0, 0, 0, 0]
 clicked = -1
 current_score = 0
-
+player = 1
 
 def check_scores(selected_choice, numbers_list, possible, current_score):
     active = 0
@@ -81,6 +81,8 @@ def draw_stuff():
     screen.blit(accept_text, (400, 167))
     rolls_text = font.render("Rolls Left: " + str(rolls_left), True, white)
     screen.blit(rolls_text, (15, 15))
+    play_text = font.render("Player " + str(player), True, white)
+    screen.blit(play_text, (520, 15))
     pygame.draw.rect(screen, white, [0, 200, 225, HEIGHT - 200])
     pygame.draw.line(screen, black, (0, 40), (WIDTH, 40), 3)
     pygame.draw.line(screen, black, (0, 200), (WIDTH, 200), 5)
