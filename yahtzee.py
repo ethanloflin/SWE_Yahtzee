@@ -1,5 +1,7 @@
 import random
 import pygame
+from Scoring import *
+
 
 pygame.init()
 ##Initializes screen, sets size, caption, timer, font, and colors. 
@@ -176,6 +178,15 @@ class Choice:
         elif not selected[self.key]:
             selected[self.key] = True
         
+#Score class is to draw score of PlayerScoreCard results
+class Score:
+    def __init__(self, x_pos, y_pos, text):
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+        self.text = text
+
+    def draw(self):
+        my_text = font.render(self.text, True, black)
         
 def check_possibilities(possible_list, numbers_list):
     ##How does it handle running out of possibliities?
