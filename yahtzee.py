@@ -1,5 +1,7 @@
 import random
 import pygame
+from Scoring import *
+
 
 pygame.init()
 ##Initializes screen, sets size, caption, timer, font, and colors. 
@@ -98,7 +100,15 @@ class Choice:
             my_text = font.render(self.text, True, black)
         screen.blit(my_text, (self.x_pos + 10, self.y_pos + 5))
         
-        
+#Score class is to draw score of PlayerScoreCard results
+class Score:
+    def __init__(self, x_pos, y_pos, text):
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+        self.text = text
+
+    def draw(self):
+        my_text = font.render(self.text, True, black)
         
 def check_possibilities(possible_list, numbers_list):
     ##How does it handle running out of possibliities?
@@ -123,7 +133,8 @@ def check_possibilities(possible_list, numbers_list):
             max_count = numbers_list.count(index)
     return possible_list
     
-        
+Player = PlayerScoreCard
+Player.InitiateScores(Player)
         
 
 ##Main Loop
@@ -205,12 +216,15 @@ while running:
             if roll_button.collidepoint(event.pos) and rolls_left > 0:
                 roll = True
                 rolls_left -= 1
+            if accept_button.collidepoint(event.pos):
+                ChooseScoringOption(Player, numbers_list)
+
     ##Resets roll to false
     if roll: 
         for number in range(len(numbers_list)):
             numbers_list[number] = random.randint(1, 6)
         roll = False      
-        
+    
            
     pygame.display.flip()
 pygame.quit()
