@@ -176,17 +176,6 @@ class Choice:
         score_text = font.render(str(self.score), True, (0, 0, 255))
         screen.blit(score_text, (self.x_pos + 165, self.y_pos + 10))
         
-        
-#Score class is to draw score of PlayerScoreCard results
-class Score:
-    def __init__(self, x_pos, y_pos, text):
-        self.x_pos = x_pos
-        self.y_pos = y_pos
-        self.text = text
-
-    def draw(self):
-        my_text = font.render(self.text, True, black)
-
 
 
 def restart_function():
