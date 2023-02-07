@@ -558,10 +558,11 @@ def restart_function():
     global score
     roll = False
     number_list = [7, 8, 9, 10, 11]
-    selected_choice = [False, False, False, False, False]
+    selected = [False, False, False, False, False]
+    selected_choice = [False, False, False, False, False, False, False, False, False, False, False, False, False]
     clicked = False
     rolls_left = 3
-    scores = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    scores = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     choice = [False, False, False, False, False, False, False, False, False, False, False, False, False]
     done = [False, False, False, False, False, False, False, False, False, False, False, False, False]
     possible = [False, False, False, False, False, False, False, False, False, False, False, False, False]
