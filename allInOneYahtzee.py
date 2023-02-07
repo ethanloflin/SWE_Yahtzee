@@ -44,7 +44,9 @@ menuButtonHeight = 50
 numbers_list = [0, 0, 0, 0, 0,]
 selected_choice = [False, False, False, False, False, False, False, False, False, False, False, False, False, False]
 possible = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
-done = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
+done = [False, False, False, False, False, False, False, False, False, False, False, False, False]
+score = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,]
+rolled = False
 
 dice_choice = [True, True, True, True, True]
 
@@ -57,6 +59,7 @@ def wordsOnScreen(msg,txtSize,h,y):
     TextRect.center = ((WIDTH/2) , (HEIGHT/h + y))
     screen.blit(TextSurf, TextRect)
 
+#Buttons
 def diceButton(x, y, w, h, ic, ac, choice,action = None):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
@@ -89,6 +92,7 @@ def rollButton(msg,x,y,w,h,ic,ac,dice,action = None):
         if click[0] == 1 and action != None:
             if action == "FirstRoll":
                 roll_dice(dice)
+                return True
             elif action == "Reroll":
                 roll_dice(dice)
                 return True
@@ -101,7 +105,7 @@ def rollButton(msg,x,y,w,h,ic,ac,dice,action = None):
     textRect.center = ( (x+(w/2)), (y+(h/2)) )
     screen.blit(textSurf, textRect)
 
-def menuButon(msg,x,y,w,h,ic,ac,action = None):
+def menuButton(msg,x,y,w,h,ic,ac,action = None):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
 
@@ -110,7 +114,7 @@ def menuButon(msg,x,y,w,h,ic,ac,action = None):
 
         if click[0] == 1 and action != None:
             if action == "Play":
-               game_loop()
+               game_loop(3)
             elif action == "Rules":
                rules_page()
             elif action == "Back":
@@ -132,7 +136,7 @@ def menuButon(msg,x,y,w,h,ic,ac,action = None):
             elif action == "Back to menu":
                 game_intro()
             elif action =="Accepted":
-                print("kind of")
+                accepted()
             elif action == "Nothing":
                 print("No more rolls")
             elif action == "Quit":
@@ -145,6 +149,43 @@ def menuButon(msg,x,y,w,h,ic,ac,action = None):
     textRect.center = ( (x+(w/2)), (y+(h/2)) )
     screen.blit(textSurf, textRect)
 
+def scoreButton(x,y,w,h,ic,ac,action = None):
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+
+    if x+w > mouse[0] > x and y+h > mouse[1] > y:
+        pygame.draw.rect(screen, ac,(x,y,w,h))
+        if click[0] == 1 and action != None:
+            if action == "Aces":
+                ScoreAces(numbers_list, possible)
+            elif action == "Twos":
+                ScoreTwos(numbers_list, possible)
+            elif action == "Threes":
+                ScoreThrees(numbers_list, possible)
+            elif action == "Fours":
+                ScoreFours(numbers_list, possible)
+            elif action == "Fives":
+                ScoreFives(numbers_list, possible)
+            elif action == "Sixes":
+                ScoreSixes(numbers_list, possible)
+            elif action == "3ofAKind":
+                ScoreThreeOfAKind(numbers_list, possible)
+            elif action == "4ofAKind":
+                ScoreFourOfAKind(numbers_list, possible)
+            elif action == "FullHouse":
+                ScoreFullHouse(numbers_list, possible)
+            elif action == "SmStraight":
+                ScoreSmStraight(numbers_list, possible)
+            elif action == "LgStraight":
+                ScoreLgStraight(numbers_list, possible)
+            elif action == "YAHTZEE":
+                ScoreYahtzee(numbers_list, possible)
+            elif action == "Chance":
+                ScoreChance(numbers_list, possible)
+    else:
+        pygame.draw.rect(screen, ic,(x,y,w,h))
+
+#Rules
 def rules_page():
     topText = "The Rules of"
     bottomText = "YAHTZEE"
@@ -163,12 +204,12 @@ def rules_page():
 
         mouse = pygame.mouse.get_pos()
 
-        Back = menuButon("Back", left, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, green, "Back")
-        Quit = menuButon("Exit", right, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
-        Howtoplay = menuButon('How to Play' , 225 , 250 , 150 , menuButtonHeight, black , green , 'How to play')
-        Scoring = menuButon('Scoring' , centered, 350, menuButtonWidth , menuButtonHeight, black, green, 'Scoring')
-        Ending = menuButon('Ending a Game', 220, 450 , 160, menuButtonHeight , black , green , 'Ending a Game')
-        ExampleTurn = menuButon('Example Turn' , 225 , 550 , 150 , menuButtonHeight , black , green , 'Example Turn')
+        Back = menuButton("Back", left, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, green, "Back")
+        Quit = menuButton("Exit", right, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
+        Howtoplay = menuButton('How to Play' , 225 , 250 , 150 , menuButtonHeight, black , green , 'How to play')
+        Scoring = menuButton('Scoring' , centered, 350, menuButtonWidth , menuButtonHeight, black, green, 'Scoring')
+        Ending = menuButton('Ending a Game', 220, 450 , 160, menuButtonHeight , black , green , 'Ending a Game')
+        ExampleTurn = menuButton('Example Turn' , 225 , 550 , 150 , menuButtonHeight , black , green , 'Example Turn')
 
         pygame.display.update()
         timer.tick(15)
@@ -203,9 +244,9 @@ def htp_page():
 
         mouse = pygame.mouse.get_pos()
 
-        Backtor = menuButon("Back to Rules", centered , bottomRulesButton, 135 , menuButtonHeight, black, green, "Back to rules")
-        Quit = menuButon("Exit", right, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
-        mBack = menuButon("Back to menu", left, bottomRulesButton, 135, menuButtonHeight, black, green, "Back to menu")
+        Backtor = menuButton("Back to Rules", centered , bottomRulesButton, 135 , menuButtonHeight, black, green, "Back to rules")
+        Quit = menuButton("Exit", right, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
+        mBack = menuButton("Back to menu", left, bottomRulesButton, 135, menuButtonHeight, black, green, "Back to menu")
 
         pygame.display.update()
         timer.tick(15)
@@ -258,9 +299,9 @@ def example_page():
 
         mouse = pygame.mouse.get_pos()
 
-        Backtor = menuButon("Back to Rules", centered , bottomRulesButton, 135 , menuButtonHeight, black, green, "Back to rules")
-        Quit = menuButon("Exit", right, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
-        mBack = menuButon("Back to menu", left, bottomRulesButton, 135, menuButtonHeight, black, green, "Back to menu")
+        Backtor = menuButton("Back to Rules", centered , bottomRulesButton, 135 , menuButtonHeight, black, green, "Back to rules")
+        Quit = menuButton("Exit", right, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
+        mBack = menuButton("Back to menu", left, bottomRulesButton, 135, menuButtonHeight, black, green, "Back to menu")
 
         pygame.display.update()
         timer.tick(15)
@@ -295,10 +336,10 @@ def scoring_page():
 
         mouse = pygame.mouse.get_pos()
 
-        upperdeck = menuButon('Upper Section' , (WIDTH/2 - 250), 500, 150 , menuButtonHeight, black, green, 'Upper Deck Scoring')
-        Backtor = menuButon("Back to Rules", centered , bottomRulesButton, 135 , menuButtonHeight, black, green, "Back to rules")
-        Quit = menuButon("Exit", right, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
-        mBack = menuButon("Back to menu", left, bottomRulesButton, 135, menuButtonHeight, black, green, "Back to menu")
+        upperdeck = menuButton('Upper Section' , (WIDTH/2 - 250), 500, 150 , menuButtonHeight, black, green, 'Upper Deck Scoring')
+        Backtor = menuButton("Back to Rules", centered , bottomRulesButton, 135 , menuButtonHeight, black, green, "Back to rules")
+        Quit = menuButton("Exit", right, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
+        mBack = menuButton("Back to menu", left, bottomRulesButton, 135, menuButtonHeight, black, green, "Back to menu")
 
         pygame.display.update()
         timer.tick(15)
@@ -311,7 +352,7 @@ def end_page():
     fourth = "If you get at least 63 points in the Upper section"
     fifth = "you get 35 bonus points."
     sixth = "Add all of the Lower section together."
-    seventh = "If you have any bonus YAHTEEs add them now."
+    seventh = "If you have any bonus YAHTZEEs add them now."
     eighth = "Add total of Upper and Lower sections."
     ninth = "If you have the highest score, you win!"
 
@@ -337,9 +378,9 @@ def end_page():
 
         mouse = pygame.mouse.get_pos()
 
-        Backtor = menuButon("Back to Rules", centered , bottomRulesButton, 135 , menuButtonHeight, black, green, "Back to rules")
-        Quit = menuButon("Exit", right, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
-        mBack = menuButon("Back to menu", left, bottomRulesButton, 135, menuButtonHeight, black, green, "Back to menu")
+        Backtor = menuButton("Back to Rules", centered , bottomRulesButton, 135 , menuButtonHeight, black, green, "Back to rules")
+        Quit = menuButton("Exit", right, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
+        mBack = menuButton("Back to menu", left, bottomRulesButton, 135, menuButtonHeight, black, green, "Back to menu")
 
         pygame.display.update()
         timer.tick(15)
@@ -378,10 +419,10 @@ def upperdeckpage():
 
         mouse = pygame.mouse.get_pos()
         
-        lowerdeck = menuButon('Lower Section' , (WIDTH/2 + 100) , 500 , 150, menuButtonHeight , black , green , 'Lower Deck Scoring')
-        Backtor = menuButon("Back to Rules", centered , bottomRulesButton, 135 , menuButtonHeight, black, green, "Back to rules")
-        Quit = menuButon("Exit", right, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
-        mBack = menuButon("Back to menu", left, bottomRulesButton, 135, menuButtonHeight, black, green, "Back to menu")
+        lowerdeck = menuButton('Lower Section' , (WIDTH/2 + 100) , 500 , 150, menuButtonHeight , black , green , 'Lower Deck Scoring')
+        Backtor = menuButton("Back to Rules", centered , bottomRulesButton, 135 , menuButtonHeight, black, green, "Back to rules")
+        Quit = menuButton("Exit", right, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
+        mBack = menuButton("Back to menu", left, bottomRulesButton, 135, menuButtonHeight, black, green, "Back to menu")
 
         pygame.display.update()
         timer.tick(15)
@@ -435,17 +476,229 @@ def lowerdeckpage():
 
         mouse = pygame.mouse.get_pos()
 
-        Backtor = menuButon("Back to Rules", centered , bottomRulesButton, 135 , menuButtonHeight, black, green, "Back to rules")
-        Quit = menuButon("Exit", right, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
-        mBack = menuButon("Back to menu", left, bottomRulesButton, 135, menuButtonHeight, black, green, "Back to menu")
+        Backtor = menuButton("Back to Rules", centered , bottomRulesButton, 135 , menuButtonHeight, black, green, "Back to rules")
+        Quit = menuButton("Exit", right, bottomRulesButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
+        mBack = menuButton("Back to menu", left, bottomRulesButton, 135, menuButtonHeight, black, green, "Back to menu")
 
         pygame.display.update()
         timer.tick(15)
 
+#Scoring
+def ScoreAces(numbers_list, possible):
+    temp = 0
+    if possible[0] == False:
+        temp = 0
+    else:
+        for x in numbers_list:
+            if x == 1:
+                temp += 1
+    score[0] = temp
+    done[0] = True
+    rolled = False
+    game_loop(3)
+
+def ScoreTwos(numbers_list, possible):
+    temp = 0
+    if possible[1] == False:
+        temp = 0
+    else:
+        for x in numbers_list:
+            if x == 2:
+                temp += 2
+    score[1] = temp
+    done[1] = True
+    rolled = False
+    game_loop(3) 
+
+def ScoreThrees(numbers_list, possible):
+    temp = 0
+    if possible[2] == False:
+        temp = 0
+    else:
+        for x in numbers_list:
+            if x == 3:
+                temp += 3
+    score[2] = temp
+    done[2] = True
+    rolled = False
+    game_loop(3)   
+
+def ScoreFours(numbers_list, possible):
+    temp = 0
+    if possible[3] == False:
+        temp = 0
+    else:
+        for x in numbers_list:
+            if x == 4:
+                temp += 4
+    score[3] = temp
+    done[3] = True
+    rolled = False
+    game_loop(3)   
+
+def ScoreFives(numbers_list, possible):
+    temp = 0
+    if possible[4] == False:
+        temp = 0
+    else:
+        for x in numbers_list:
+            if x == 5:
+                temp += 5
+    score[4] = temp
+    done[4] = True
+    rolled = False
+    game_loop(3)   
+
+def ScoreSixes(numbers_list, possible):
+    temp = 0
+    if possible[5] == False:
+        temp = 0
+    else:
+        for x in numbers_list:
+            if x == 6:
+                temp += 6
+    score[5] = temp
+    done[5] = True
+    rolled = False
+    game_loop(3)   
+
+    temp = 0
+    for x in numbers_list:
+        if x == 1:
+            temp += 1
+    score[0] = temp
+    done[0] = True
+    rolled = False
+    game_loop(3)
+
+def ScoreThreeOfAKind(numbers_list, possible):
+    temp = 0
+    if possible[6] == False:
+        temp = 0
+    else:
+        for x in numbers_list:
+            temp += x
+    score[6] = temp
+    done[6] = True
+    rolled = False
+    game_loop(3)   
+
+def ScoreFourOfAKind(numbers_list, possible):
+    temp = 0
+    if possible[7] == False:
+        temp = 0
+    else:
+        for x in numbers_list:
+            temp += x
+    score[7] = temp
+    done[7] = True
+    rolled = False
+    game_loop(3)   
+
+def ScoreFullHouse(numbers_list, possible):
+    temp = 0
+    if possible[8] == False:
+        temp = 0
+    else:
+        temp = 25
+    score[8] = temp
+    done[8] = True
+    rolled = False
+    game_loop(3)   
+
+def ScoreSmStraight(numbers_list, possible):
+    temp = 0
+    if possible[9] == False:
+        temp = 0
+    else:
+        temp = 30
+    score[9] = temp
+    done[9] = True
+    rolled = False
+    game_loop(3)   
+
+def ScoreLgStraight(numbers_list, possible):
+    temp = 0
+    if possible[10] == False:
+        temp = 0
+    else:
+        temp = 40
+    score[10] = temp
+    done[10] = True
+    rolled = False
+    game_loop(3)   
+
+def ScoreYahtzee(numbers_list, possible):
+    temp = 0
+    if possible[11] == False:
+        temp = 0
+    else:
+        temp = 50
+    score[11] = temp
+    done[11] = True
+    rolled = False
+    game_loop(3)   
+
+def ScoreChance(numbers_list, possible):
+    temp = 0
+    if possible[12] == False:
+        temp = 0
+    else:
+        for x in numbers_list:
+            temp += x
+    score[12] = temp
+    done[12] = True
+    rolled = False
+    game_loop(3)   
+
+def accepted():
+    while True:
+        mouse = pygame.mouse.get_pos()
+
+        possible_real = possible
+        done_real = done
+
+        timer.tick(fps)
+        screen.fill(background)
+        
+        draw_stuff(0)
+        draw_dice(numbers_list)   
+        draw_scoreCard(selected_choice, possible_real, done_real)   
+        if done[0] != True:
+            aces = scoreButton(157, 203, 68, 25, white, green, "Aces")
+        if done[1] != True:
+            twos = scoreButton(157, 233, 68, 25, white, green, "Twos")
+        if done[2] != True:
+            threes = scoreButton(157, 263, 68, 25, white, green, "Threes")
+        if done[3] != True:
+            fours = scoreButton(157, 293, 68, 25, white, green, "Fours")
+        if done[4] != True:
+            fives = scoreButton(157, 323, 68, 25, white, green, "Fives")
+        if done[5] != True:
+            sixes = scoreButton(157, 353, 68, 25, white, green, "Sixes")
+        if done[6] != True:
+            threeOfAKind = scoreButton(157, 473, 68, 25, white, green, "3ofAKind")
+        if done[7] != True:
+            fourOfAKind = scoreButton(157, 503, 68, 25, white, green, "4ofAKind")
+        if done[8] != True:
+            fullHouse = scoreButton(157, 533, 68, 25, white, green, "FullHouse")
+        if done[9] != True:
+            smStraight = scoreButton(157, 563, 68, 25, white, green, "SmStraight")
+        if done[10] != True:
+            lgStraight = scoreButton(157, 593, 68, 25, white, green, "LgStraight")
+        if done[11] != True:
+            yahtzee = scoreButton(157, 623, 68, 25, white, green, "YAHTZEE")
+        if done[12] != True:
+            chance = scoreButton(157, 653, 68, 25, white, green, "Chance")
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        pygame.display.flip()
+
 #Draws scorecard outline + buttons
 def draw_stuff(rolls_left):
-    accept_text = font.render("Accept Turn", True, white)
-    screen.blit(accept_text, (400, 167))
     rolls_text = font.render("Rolls Left: " + str(rolls_left), True, white)
     screen.blit(rolls_text, (15, 15))
     pygame.draw.rect(screen, white, [0, 200, 225, HEIGHT - 200])
@@ -453,7 +706,7 @@ def draw_stuff(rolls_left):
     pygame.draw.line(screen, black, (0, 200), (WIDTH, 200), 5)
     pygame.draw.line(screen, black, (155, 200), (155, HEIGHT), 3)
     pygame.draw.line(screen, black, (225, 200), (225, HEIGHT), 3)
-
+    
 ##Class for die, includes draw function used to draw each die 1-6.
 class Dice:
     def __init__(self, x_pos, y_pos, number, key):
@@ -676,18 +929,39 @@ def roll_dice(choice):
     for x in range (0, 5):
         if choice[x] == True:
             numbers_list[x] = random.randint(1, 6)
+    rolled = True
 
 def choose_dice(x):
     dice_choice[x] = True
 
+def endScore():
+    finalScore = 23
+    topText = "Final Score"
+    bottomText = str(finalScore)
+
+    screen.fill(background)
+
+    while True:
+        for event in pygame.event.get():
+            print(event)
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        wordsOnScreen(topText, midText, 8, 0)
+        wordsOnScreen(bottomText, largeText, 4, 0)
+
+        pygame.display.update()
+        timer.tick(15)    
+
+
 ##Main Loop
-def game_loop():
-    rolls_left = 3
+def game_loop(roll):
+    rolls_left = roll
     running = True
     dice_choice_real = dice_choice
     while running:
         mouse = pygame.mouse.get_pos()
-        
+
         numbers_list_real = numbers_list
 
         selected_choice_real = selected_choice
@@ -709,7 +983,7 @@ def game_loop():
 
         if(rolls_left == 3):
             first_roll = rollButton("Click to Roll", 10, 160, 280, 30, black, green, dice_choice_real, "FirstRoll")
-            if 0 not in numbers_list_real:
+            if first_roll == True:
                 rolls_left -= 1 
                 dice_choice_real = [False, False, False, False, False]    
         elif(rolls_left < 3 and rolls_left >= 1):
@@ -720,11 +994,16 @@ def game_loop():
                 if roll_again == True:
                     dice_choice_real = [False,False,False,False,False]
                     rolls_left -= 1
-
         else:
-            no_rolls = menuButon("No Rolls Left", 10, 160, 280, 30, black, red, "Nothing")
+            no_rolls = menuButton("No Rolls Left", 10, 160, 280, 30, black, red, "Nothing")
         
-        accept_button = menuButon("Accept Turn", 310, 160, 280, 30, black, green, "Accepted")
+        if rolls_left == 3:
+            accept_button = menuButton("Roll Some Dice", 310, 160, 280, 30, black, red, "Not Selected")
+        else:
+            accept_button = menuButton("Accept Turn", 310, 160, 280, 30, black, green, "Accepted")
+
+        if False not in done:
+            endScore()
 
         ##Event handler
         for event in pygame.event.get():
@@ -752,9 +1031,9 @@ def game_intro():
 
         mouse = pygame.mouse.get_pos()
 
-        Rules = menuButon("Rules", centered, topMenuButton, menuButtonWidth, menuButtonHeight, black, green, "Rules")
-        Play = menuButon("Play", centered, middleMenuButton, menuButtonWidth, menuButtonHeight, black, green, "Play")
-        Quit = menuButon("Exit", centered, bottomMenuButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
+        Rules = menuButton("Rules", centered, topMenuButton, menuButtonWidth, menuButtonHeight, black, green, "Rules")
+        Play = menuButton("Play", centered, middleMenuButton, menuButtonWidth, menuButtonHeight, black, green, "Play")
+        Quit = menuButton("Exit", centered, bottomMenuButton, menuButtonWidth, menuButtonHeight, black, red, "Quit")
 
         pygame.display.update()
         timer.tick(15)        
